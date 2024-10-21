@@ -10,7 +10,7 @@ data class PropertiesDto(
     val id: Int?,
     val list: Boolean?,
     val name: String?,
-    val optionDtos: List<OptionDto?>?,
+    val options: List<OptionDto?>?,
     @SerializedName("other_value")
     val otherValue: Any?,
     val parent: Any?,

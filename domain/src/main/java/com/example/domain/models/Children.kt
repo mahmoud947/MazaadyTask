@@ -8,8 +8,8 @@ data class Children(
     val circleIcon: String?,
     val description: Any?,
     val disableShipping: Int?,
-    val id: Int?,
+    override val id: Int?,
     val image: String?,
-    val name: String?,
-    val slug: String?
-)
+    override val name: String?,
+    override val slug: String?
+): BottomSheetItem

@@ -15,7 +15,7 @@ interface CategoryService {
 
     @GET("properties")
     suspend fun getPropertiesByCategory(
-        @Query("cat_id")
+        @Query("cat")
         categoryId: Int
     ): BaseResponse<List<PropertiesDto>>
 

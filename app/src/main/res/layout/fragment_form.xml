@@ -1,21 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
     </data>
 
-    <FrameLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".fregments.category.FormFragment">
 
-        <!-- TODO: Update blank fragment layout -->
-        <TextView
+        <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="@string/hello_blank_fragment" />
+            android:padding="16dp">
 
-    </FrameLayout>
+            <LinearLayout
+                android:id="@+id/mainCategoryLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!-- Main Category Dropdown -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/mainCategoryInputLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:focusable="false"
+                    android:hint="Main Category">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/mainCategoryEditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:drawableEnd="@drawable/baseline_keyboard_arrow_down_24"
+                        android:editable="false"
+                        android:focusable="false"
+                        android:text="" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Main Category Dropdown -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/supCategoryInputLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:focusable="false"
+
+                    android:hint="Sub Category">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/supCategoryEditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:drawableEnd="@drawable/baseline_keyboard_arrow_down_24"
+                        android:editable="false"
+                        android:focusable="false"
+                        android:text="" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:id="@+id/ll_properties"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+        </ScrollView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

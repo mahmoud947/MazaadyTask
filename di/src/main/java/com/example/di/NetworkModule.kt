@@ -25,6 +25,7 @@ object NetworkModule {
         authInterceptor: AuthInterceptor
     ): OkHttpClient {
         val logger = HttpLoggingInterceptor()
+        logger.level = HttpLoggingInterceptor.Level.BODY
         return OkHttpClient().newBuilder()
             .connectTimeout(15, TimeUnit.MINUTES)
             .readTimeout(15, TimeUnit.MINUTES)
