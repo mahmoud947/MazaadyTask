@@ -27,6 +27,7 @@ android {
     buildFeatures {
         buildConfig = true
         dataBinding = true
+        viewBinding = true
     }
     buildTypes {
         debug {
@@ -69,6 +70,8 @@ dependencies {
     implementation(project(":domain"))
     implementation(project(":core"))
     implementation(project(":di"))
+    implementation(libs.lifecycle.livedata)
+    implementation(libs.lifecycle.viewmodel)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

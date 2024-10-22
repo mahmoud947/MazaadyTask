@@ -25,6 +25,13 @@ class CategoryViewModel @Inject constructor(
     private val _optionChild = MutableLiveData<Resource<List<Properties>>>()
     val optionChild: LiveData<Resource<List<Properties>>> get() = _optionChild
 
+    private val _map : MutableMap<String, String> = mutableMapOf()
+    val map : Map<String, String> get() = _map
+
+
+    fun addMap(key: String, value: String){
+        _map[key] = value
+    }
 
     fun getCategories() {
         launchCoroutine(Dispatchers.IO) {

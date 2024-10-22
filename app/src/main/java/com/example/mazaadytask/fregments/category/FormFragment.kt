@@ -8,198 +8,204 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
+import com.example.core.base.BaseFragment
+import com.example.core.base.BaseViewModel
 import com.example.core.utils.Resource
-import com.example.domain.models.BottomSheetItem
-import com.example.domain.models.Category
-import com.example.domain.models.Children
-import com.example.domain.models.Option
-import com.example.domain.models.Properties
+import com.example.domain.models.*
 import com.example.mazaadytask.databinding.CustomDropdownItemBinding
 import com.example.mazaadytask.databinding.FragmentFormBinding
 import com.example.mazaadytask.dialogs.model_bottom_sheet.ModalBottomSheetDialog
 import dagger.hilt.android.AndroidEntryPoint
-
+import com.example.mazaadytask.R
 private const val TAG = "FormFragment"
 
 @AndroidEntryPoint
-class FormFragment : Fragment() {
+class FormFragment : BaseFragment() {
+
     private var _binding: FragmentFormBinding? = null
     private val binding get() = _binding!!
 
-    val viewModel: CategoryViewModel by viewModels()
+    override val viewModel: CategoryViewModel by viewModels()
 
-    private val mainCategory: MutableList<Category> = mutableListOf()
-    private val supCategory: MutableList<Children> = mutableListOf()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
+    private val mainCategory = mutableListOf<Category>()
+    private val supCategory = mutableListOf<Children>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentFormBinding.inflate(inflater, container, false)
         viewModel.getCategories()
 
+        setupMainCategoryClickListener()
+        setupSupCategoryClickListener()
+        setupObservers()
+        binding.btnSubmit.setOnClickListener {
+            findNavController().navigate(R.id.action_formFragment_to_resultFragment)
+        }
+        return binding.root
+    }
+
+    private fun setupMainCategoryClickListener() {
         binding.mainCategoryEditText.setOnClickListener {
             val modal = ModalBottomSheetDialog(
                 onItemClicked = { item ->
-                    val supCategories =
-                        mainCategory.find { it.id == item.id }?.children?.mapNotNull { it }
-                    supCategory.clear()
-                    supCategories?.let { elements -> supCategory.addAll(elements) }
-                    binding.supCategoryEditText.setText(supCategories?.firstOrNull()?.name ?: "")
-                    binding.mainCategoryEditText.setText(item.name)
+                    mainCategory.find { it.id == item.id }?.children?.let { children ->
+                        supCategory.apply {
+                            clear()
+                            addAll(children.mapNotNull { it })
+                        }
+                        binding.supCategoryEditText.setText(supCategory.firstOrNull()?.name ?: "")
+                        binding.mainCategoryEditText.setText(item.name)
+                    }
+                    viewModel.addMap("Main Category", item.name ?: "")
                 },
                 items = mainCategory
             )
-            childFragmentManager.let {
-                modal.show(it, ModalBottomSheetDialog.TAG)
-            }
+            modal.show(childFragmentManager, ModalBottomSheetDialog.TAG)
         }
+    }
 
+    private fun setupSupCategoryClickListener() {
         binding.supCategoryEditText.setOnClickListener {
             val modal = ModalBottomSheetDialog(
                 onItemClicked = { item ->
                     binding.supCategoryEditText.setText(item.name)
                     viewModel.getSubCategories(item.id ?: 0)
+                    viewModel.addMap("Sub Category", item.name ?: "")
                 },
                 items = supCategory
             )
-            childFragmentManager.let {
-                modal.show(it, ModalBottomSheetDialog.TAG)
-            }
+            modal.show(childFragmentManager, ModalBottomSheetDialog.TAG)
         }
-        observers()
-        return binding.root
     }
 
-    private fun observers() {
+    private fun setupObservers() {
         viewModel.categories.observe(viewLifecycleOwner) { resource ->
             when (resource) {
-                is Resource.Error -> {
-                    Log.e(TAG, "Error fetching categories: ${resource.exception}")
-                }
-
-                Resource.Loading -> {
-                    Log.d(TAG, "Fetching categories...")
-                }
-
+                is Resource.Error -> Log.e(TAG, "Error fetching categories: ${resource.exception}")
+                is Resource.Loading -> Log.d(TAG, "Fetching categories...")
                 is Resource.Success -> {
-                    val categories = resource.data.mapNotNull { it }
-                    binding.mainCategoryEditText.setText(categories.firstOrNull()?.name ?: "")
-                    mainCategory.addAll(categories)
+                    mainCategory.apply {
+                        clear()
+                        addAll(resource.data)
+                    }
+                    binding.mainCategoryEditText.setText(mainCategory.firstOrNull()?.name ?: "")
                 }
 
-                Resource.Idle -> {}
+                else -> {}
             }
         }
 
         viewModel.subCategories.observe(viewLifecycleOwner) { resource ->
             when (resource) {
-                is Resource.Error -> {
-                    Log.e(TAG, "Error fetching subcategories: ${resource.exception}")
-                }
+                is Resource.Error -> Log.e(
+                    TAG,
+                    "Error fetching subcategories: ${resource.exception}"
+                )
 
-                Resource.Loading -> {
-                    Log.d(TAG, "Fetching subcategories...")
-                }
-
-                is Resource.Success -> {
-                    val properties = resource.data.map { it }
-                    addSubCategories(properties)
-                }
-
-                Resource.Idle -> {}
+                is Resource.Loading -> Log.d(TAG, "Fetching subcategories...")
+                is Resource.Success -> addSubCategories(resource.data)
+                else -> {}
             }
         }
     }
 
-    private fun addSubCategories(list: List<Properties>) {
+    private fun addSubCategories(properties: List<Properties>) {
         binding.llProperties.removeAllViews()
-
-        list.forEach { item ->
-            val customView = CustomDropdownItemBinding.inflate(layoutInflater)
-            customView.supCategoryInputLayout.hint = item.name
-            customView.root.tag = item.slug
+        properties.forEach { property ->
+            val customView = CustomDropdownItemBinding.inflate(layoutInflater).apply {
+                supCategoryInputLayout.hint = property.name
+                root.tag = property.slug
+            }
             binding.llProperties.addView(customView.root)
+            setupPropertyClickListener(customView, property)
+            viewModel.addMap(property.name ?: "", "")
+        }
+    }
 
-            customView.supCategoryEditText.setOnClickListener {
-                val options: List<Option> = item.options?.mapNotNull { it } ?: emptyList()
-                if (options.isNotEmpty()) {
-                    val modal = ModalBottomSheetDialog(
-                        onItemClicked = { selectedItem ->
+    private fun setupPropertyClickListener(
+        customView: CustomDropdownItemBinding,
+        property: Properties
+    ) {
+        customView.supCategoryEditText.setOnClickListener {
+            val options = property.options ?: emptyList()
+            if (options.isNotEmpty()) {
+                val modal = ModalBottomSheetDialog(
+                    onItemClicked = { selectedItem ->
+                        if (selectedItem.id == -1){
+                            customView.tilOtherOptions.visibility = View.VISIBLE
+                            customView.supCategoryEditText.setText(selectedItem.name)
+                        }else{
                             customView.supCategoryEditText.setText(selectedItem.name)
                             fetchAndDisplaySubOptions(selectedItem.id ?: 0, customView)
-                        },
-                        items = options
-                    )
-                    childFragmentManager.let { modal.show(it, ModalBottomSheetDialog.TAG) }
-                } else {
-                    Toast.makeText(requireContext(), "No options available", Toast.LENGTH_SHORT)
-                        .show()
-                }
+
+                            selectedItem.slug?.let { slug ->
+                                viewModel.addMap(property.name ?: "", selectedItem.name ?: "")
+                            }
+                        }
+
+                    },
+                    items = options.mapNotNull { it }.toMutableList().apply {
+                        add(
+                            Option(
+                                name = "اختر خيار اخر",
+                                id = -1,
+                                slug = null,
+                                child = false,
+                                parent = -1
+                            )
+                        )
+                    }
+                )
+                modal.show(childFragmentManager, ModalBottomSheetDialog.TAG)
+            } else {
+                Toast.makeText(requireContext(), "No options available", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
     private fun fetchAndDisplaySubOptions(id: Int, customView: CustomDropdownItemBinding) {
-        // Fetch sub-options based on the selected item
         viewModel.getOptionChild(id)
-
-        // Remove previous observers before adding new ones
         viewModel.optionChild.removeObservers(viewLifecycleOwner)
         viewModel.optionChild.observe(viewLifecycleOwner) { resource ->
             when (resource) {
-                is Resource.Error -> {
-                    Log.e(TAG, "Error fetching child options: ${resource.exception}")
-                }
-
-                Resource.Idle -> {
-                    Log.d(TAG, "Status: Idle")
-                }
-
-                Resource.Loading -> {
-                    Log.d(TAG, "Status: Loading")
-                }
+                is Resource.Error -> Log.e(
+                    TAG,
+                    "Error fetching child options: ${resource.exception}"
+                )
 
                 is Resource.Success -> {
-                    val options = resource.data.mapNotNull { it }
-
                     customView.llProperties.removeViews(1, customView.llProperties.childCount - 1)
-
-                    if (options.isNotEmpty()) {
-                        options.forEach { item ->
-                            val childView = CustomDropdownItemBinding.inflate(layoutInflater)
-                            childView.root.tag = item.slug.toString()
-
-                            childView.supCategoryInputLayout.hint = item.name
-
-                            customView.llProperties.addView(childView.root)
-
-                            childView.supCategoryEditText.setOnClickListener {
-                                val modal = ModalBottomSheetDialog(
-                                    onItemClicked = { selectedItem ->
-                                        childView.supCategoryEditText.setText(selectedItem.name)
-                                        fetchAndDisplaySubOptions(selectedItem.id ?: 0, childView)
-                                    },
-                                    items = item.options?.mapNotNull { it } ?: emptyList()
-                                )
-                                modal.show(childFragmentManager, ModalBottomSheetDialog.TAG)
+                    resource.data.forEach { option ->
+                        if (option.id == -1){
+                            customView.tilOtherOptions.visibility = View.VISIBLE
+                            customView.supCategoryEditText.setText(option.name)
+                            return@forEach
+                        }else{
+                            val childView = CustomDropdownItemBinding.inflate(layoutInflater).apply {
+                                root.tag = option.slug
+                                supCategoryInputLayout.hint = option.name
                             }
+                            customView.llProperties.addView(childView.root)
+                            setupPropertyClickListener(childView, option)
                         }
-                    } else {
-                        Log.d(TAG, "No options available for this item")
+                        viewModel.addMap(option.name ?: "", "")
                     }
                 }
+
+                else -> {}
             }
         }
     }
 
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    companion object {
+        private const val TAG = "FormFragment"
     }
 }
