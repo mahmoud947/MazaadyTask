@@ -9,8 +9,9 @@ import com.example.domain.repository.CategoryRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
+import javax.inject.Inject
 
-class GetAllCategoryUseCase constructor(
+class GetAllCategoryUseCase @Inject constructor(
     private val repository: CategoryRepository
 ): BaseOUseCase<Flow<Resource<List<Category>>>> {
     override fun invoke(): Flow<Resource<List<Category>>> = flow {

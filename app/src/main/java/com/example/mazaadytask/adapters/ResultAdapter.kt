@@ -1,4 +1,4 @@
-package com.example.mazaadytask.fregments.home.adapters
+package com.example.mazaadytask.adapters
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
@@ -8,33 +8,32 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.domain.models.BottomSheetItem
 import com.example.mazaadytask.databinding.ItemSelectTextBinding
-import com.example.mazaadytask.databinding.ItemSotryBinding
 
-class StoryAdapter (private val interaction: Interaction? = null) :
-    ListAdapter<Int, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
+class ResultAdapter (private val interaction: Interaction? = null) :
+    ListAdapter<BottomSheetItem, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
 
     companion object {
-        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Int>() {
+        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<BottomSheetItem>() {
 
-            override fun areItemsTheSame(oldItem: Int, newItem: Int): Boolean =
-                oldItem != newItem
+            override fun areItemsTheSame(oldItem: BottomSheetItem, newItem: BottomSheetItem): Boolean =
+                oldItem.id == newItem.id
 
             @SuppressLint("DiffUtilEquals")
-            override fun areContentsTheSame(oldItem: Int, newItem: Int): Boolean =
-                oldItem != newItem
+            override fun areContentsTheSame(oldItem: BottomSheetItem, newItem: BottomSheetItem): Boolean =
+                oldItem == newItem
 
         }
     }
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return ItemStoryViewHolder.from(parent, interaction = interaction)
+        return ItemSelectViewHolder.from(parent, interaction = interaction)
     }
 
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
-            is ItemStoryViewHolder -> {
+            is ItemSelectViewHolder -> {
                 val item = getItem(position)
                 holder.onBind(item)
             }
@@ -42,14 +41,14 @@ class StoryAdapter (private val interaction: Interaction? = null) :
     }
 
 
-    class ItemStoryViewHolder
+    class ItemSelectViewHolder
     constructor(
-        private val binding: ItemSotryBinding,
+        private val binding: ItemSelectTextBinding,
         private val interaction: Interaction?
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun onBind(item: Int) {
-            binding.imageView.setImageResource(item)
+        fun onBind(item: BottomSheetItem) {
+            binding.tvSlug.text = item.name
             binding.root.setOnClickListener {
                 interaction?.onItemSelected(adapterPosition, item)
             }
@@ -58,13 +57,13 @@ class StoryAdapter (private val interaction: Interaction? = null) :
 
 
         companion object {
-            fun from(viewGroup: ViewGroup, interaction: Interaction?): ItemStoryViewHolder {
-                val bind = ItemSotryBinding.inflate(
+            fun from(viewGroup: ViewGroup, interaction: Interaction?): ItemSelectViewHolder {
+                val bind = ItemSelectTextBinding.inflate(
                     LayoutInflater.from(viewGroup.context),
                     viewGroup,
                     false
                 )
-                return ItemStoryViewHolder(bind, interaction = interaction)
+                return ItemSelectViewHolder(bind, interaction = interaction)
             }
         }
 
@@ -72,6 +71,6 @@ class StoryAdapter (private val interaction: Interaction? = null) :
 
 
     interface Interaction {
-        fun onItemSelected(position: Int, item: Int)
+        fun onItemSelected(position: Int, item: BottomSheetItem)
     }
 }

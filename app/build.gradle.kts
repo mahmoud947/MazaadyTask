@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     id("com.google.dagger.hilt.android")
+    id("androidx.navigation.safeargs.kotlin")
     id("com.google.devtools.ksp")
 }
 
@@ -76,6 +77,9 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     coreLibraryDesugaring (libs.desugar.jdk.libs)
+
+    //gson
+    implementation(libs.gson)
 
     //hilt
     implementation(libs.hilt.android)

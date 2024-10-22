@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.domain.models.BottomSheetItem
+import com.example.mazaadytask.adapters.BottomSheetAdapter
 import com.example.mazaadytask.databinding.ModalsheetdialogBinding
 import com.google.android.material.R
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -69,7 +70,7 @@ class ModalBottomSheetDialog(
             }
 
         })
-        bottomSheetAdapter = BottomSheetAdapter(object : BottomSheetAdapter.Interaction{
+        bottomSheetAdapter = BottomSheetAdapter(object : BottomSheetAdapter.Interaction {
             override fun onItemSelected(
                 position: Int,
                 item: BottomSheetItem

@@ -4,15 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelStore
 import com.example.core.base.BaseFragment
-import com.example.core.base.BaseViewModel
 import com.example.mazaadytask.databinding.FragmentHomeBinding
-import com.example.mazaadytask.fregments.home.adapters.StoryAdapter
+import com.example.mazaadytask.adapters.StoryAdapter
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

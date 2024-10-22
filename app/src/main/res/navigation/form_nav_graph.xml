@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/formFragment"
-        android:name="com.example.mazaadytask.fregments.category.FormFragment"
+        android:name="com.example.mazaadytask.fregments.form.FormFragment"
         android:label="fragment_form"
         tools:layout="@layout/fragment_form" >
         <action
@@ -18,5 +18,9 @@
         android:id="@+id/resultFragment"
         android:name="com.example.mazaadytask.fregments.result.ResultFragment"
         android:label="fragment_result"
-        tools:layout="@layout/fragment_result" />
+        tools:layout="@layout/fragment_result" >
+        <argument
+            android:name="map"
+            app:argType="string" />
+    </fragment>
 </navigation>

@@ -10,8 +10,9 @@ import com.example.domain.repository.CategoryRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
+import javax.inject.Inject
 
-class GetOptionChildUseCase constructor(
+class GetOptionChildUseCase @Inject constructor(
     private val repository: CategoryRepository
 ): BaseIOUseCase<Int,Flow<Resource<List<Properties>>>> {
     override fun invoke(input: Int): Flow<Resource<List<Properties>>> {

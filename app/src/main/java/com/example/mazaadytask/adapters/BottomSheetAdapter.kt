@@ -1,4 +1,4 @@
-package com.example.mazaadytask.dialogs.model_bottom_sheet
+package com.example.mazaadytask.adapters
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
