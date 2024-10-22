@@ -6,20 +6,20 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.domain.models.BottomSheetItem
+import com.example.domain.models.ResultModel
+import com.example.mazaadytask.databinding.ItemResultBinding
 import com.example.mazaadytask.databinding.ItemSelectTextBinding
 
 class ResultAdapter (private val interaction: Interaction? = null) :
-    ListAdapter<BottomSheetItem, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
+    ListAdapter<ResultModel, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
 
     companion object {
-        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<BottomSheetItem>() {
+        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<ResultModel>() {
 
-            override fun areItemsTheSame(oldItem: BottomSheetItem, newItem: BottomSheetItem): Boolean =
-                oldItem.id == newItem.id
+            override fun areItemsTheSame(oldItem: ResultModel, newItem: ResultModel): Boolean =
+                oldItem.key == newItem.key
 
-            @SuppressLint("DiffUtilEquals")
-            override fun areContentsTheSame(oldItem: BottomSheetItem, newItem: BottomSheetItem): Boolean =
+            override fun areContentsTheSame(oldItem: ResultModel, newItem: ResultModel): Boolean =
                 oldItem == newItem
 
         }
@@ -43,12 +43,13 @@ class ResultAdapter (private val interaction: Interaction? = null) :
 
     class ItemSelectViewHolder
     constructor(
-        private val binding: ItemSelectTextBinding,
+        private val binding: ItemResultBinding,
         private val interaction: Interaction?
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun onBind(item: BottomSheetItem) {
-            binding.tvSlug.text = item.name
+        fun onBind(item: ResultModel) {
+            binding.tvKey.text = item.key + ":"
+            binding.tvValue.text = item.value
             binding.root.setOnClickListener {
                 interaction?.onItemSelected(adapterPosition, item)
             }
@@ -58,7 +59,7 @@ class ResultAdapter (private val interaction: Interaction? = null) :
 
         companion object {
             fun from(viewGroup: ViewGroup, interaction: Interaction?): ItemSelectViewHolder {
-                val bind = ItemSelectTextBinding.inflate(
+                val bind = ItemResultBinding.inflate(
                     LayoutInflater.from(viewGroup.context),
                     viewGroup,
                     false
@@ -71,6 +72,6 @@ class ResultAdapter (private val interaction: Interaction? = null) :
 
 
     interface Interaction {
-        fun onItemSelected(position: Int, item: BottomSheetItem)
+        fun onItemSelected(position: Int, item: ResultModel)
     }
 }

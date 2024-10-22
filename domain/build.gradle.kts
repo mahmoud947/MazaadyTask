@@ -1,6 +1,7 @@
 import org.gradle.api.JavaVersion.VERSION_11
 import org.gradle.api.JavaVersion.VERSION_17
 import org.gradle.kotlin.dsl.android
+import org.gradle.kotlin.dsl.test
 
 plugins {
     alias(libs.plugins.android.library)
@@ -61,6 +62,13 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     coreLibraryDesugaring (libs.desugar.jdk.libs)
 
+    testImplementation (libs.mockk)
+    testImplementation (libs.kotlinx.coroutines.test)
+    testImplementation (libs.byte.buddy)
+    testImplementation (libs.byte.buddy.agent)
+    testImplementation (libs.mockk.v1135)
+
+    
     //retrofit
     implementation(libs.retrofit)
     //okhttp

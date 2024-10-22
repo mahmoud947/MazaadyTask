@@ -43,6 +43,8 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            buildConfigField("String", "API_PRIVATE_KEY", "\"${project.findProperty("API_PRIVATE_KEY")}\"")
+            buildConfigField("String", "BASE_URL", "\"${project.findProperty("BASE_URL")}\"")
         }
     }
     compileOptions {
@@ -77,6 +79,8 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     coreLibraryDesugaring (libs.desugar.jdk.libs)
+
+    implementation(libs.dotsindicator)
 
     //gson
     implementation(libs.gson)

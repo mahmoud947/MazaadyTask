@@ -54,6 +54,7 @@ class FormFragment : BaseFragment() {
     }
 
     private fun setupMainCategoryClickListener() {
+        viewModel.addMap("Main Category", mainCategory.firstOrNull()?.name ?: "")
         binding.mainCategoryEditText.setOnClickListener {
             val modal = ModalBottomSheetDialog(
                 onItemClicked = { item ->

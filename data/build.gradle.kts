@@ -36,6 +36,8 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            buildConfigField("String", "API_PRIVATE_KEY", "\"${project.findProperty("API_PRIVATE_KEY")}\"")
+            buildConfigField("String", "BASE_URL", "\"${project.findProperty("BASE_URL")}\"")
         }
     }
     compileOptions {
@@ -65,7 +67,11 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     coreLibraryDesugaring (libs.desugar.jdk.libs)
-
+    testImplementation (libs.mockk)
+    testImplementation (libs.kotlinx.coroutines.test)
+    testImplementation (libs.byte.buddy)
+    testImplementation (libs.byte.buddy.agent)
+    testImplementation (libs.mockk.v1135)
 
     //retrofit
     implementation(libs.retrofit)

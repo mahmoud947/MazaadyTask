@@ -1,4 +1,4 @@
-package com.example.data.datasource.remote.interceptor;
+package com.example.data.interceptor
 
 import com.example.data.BuildConfig
 import okhttp3.Interceptor
@@ -19,6 +19,5 @@ class AuthInterceptor @Inject constructor() : Interceptor {
                     }
                     .build()
             )
-
     }
 }

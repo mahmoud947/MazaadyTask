@@ -1,7 +1,8 @@
 package com.example.di
 
 import com.example.data.datasource.remote.CategoryService
-import com.example.data.datasource.remote.interceptor.AuthInterceptor
+import com.example.data.interceptor.AuthInterceptor
+import com.example.data.interceptor.LanguageInterceptor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -22,7 +23,8 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideOkHttp(
-        authInterceptor: AuthInterceptor
+        authInterceptor: AuthInterceptor,
+        languageInterceptor: LanguageInterceptor
     ): OkHttpClient {
         val logger = HttpLoggingInterceptor()
         logger.level = HttpLoggingInterceptor.Level.BODY
@@ -31,6 +33,7 @@ object NetworkModule {
             .readTimeout(15, TimeUnit.MINUTES)
             .writeTimeout(15, TimeUnit.MINUTES)
             .addInterceptor(authInterceptor)
+            .addInterceptor(languageInterceptor)
             .addInterceptor(logger)
             .retryOnConnectionFailure(true)
             .build()
