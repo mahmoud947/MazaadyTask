@@ -1,21 +1,23 @@
 package com.example.core.base
 
 import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import com.example.core.dialogs.ErrorDialog
+import com.example.core.dialogs.LoadingDialog
 import com.google.android.material.snackbar.Snackbar
 
 abstract class BaseFragment : androidx.fragment.app.Fragment() {
     abstract val viewModel: BaseViewModel
     lateinit var errorDialog: ErrorDialog
-
+    lateinit var loadingDialog: LoadingDialog
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         errorDialog =ErrorDialog(activity = requireActivity(), buttonTitle = "Retry")
+        loadingDialog = LoadingDialog()
+
     }
 
     override fun onStart() {
@@ -42,7 +44,10 @@ abstract class BaseFragment : androidx.fragment.app.Fragment() {
             Snackbar.make(this.requireView(), it, Snackbar.LENGTH_LONG).show()
         }
         viewModel.showLoading.observe(this) {
-
+            if (it)
+                loadingDialog.show(requireActivity().supportFragmentManager, "loading_dialog")
+            else
+                loadingDialog.dismiss()
         }
 
 

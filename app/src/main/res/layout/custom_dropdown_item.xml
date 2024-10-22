@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -8,17 +9,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/ll_properties"
+        android:paddingVertical="10dp"
         android:orientation="vertical">
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/supCategoryInputLayout"
             android:layout_width="match_parent"
+            app:hintTextColor="@color/design_default_color_on_secondary"
             android:layout_height="wrap_content"
             android:focusable="false">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/supCategoryEditText"
                 android:layout_width="match_parent"
+                android:textColor="@color/black"
                 android:layout_height="match_parent"
                 android:drawableEnd="@drawable/baseline_keyboard_arrow_down_24"
                 android:editable="false"
@@ -31,7 +35,7 @@
             android:layout_width="match_parent"
             android:visibility="gone"
             android:layout_height="wrap_content"
-            android:hint="Sub Category">
+            android:hint="Other Options">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_other_options"
@@ -39,6 +43,7 @@
                 android:layout_height="match_parent"
                 android:text="" />
         </com.google.android.material.textfield.TextInputLayout>
+
 
     </LinearLayout>
 

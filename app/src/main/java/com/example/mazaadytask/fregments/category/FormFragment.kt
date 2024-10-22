@@ -6,18 +6,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.core.base.BaseFragment
-import com.example.core.base.BaseViewModel
 import com.example.core.utils.Resource
 import com.example.domain.models.*
+import com.example.mazaadytask.R
 import com.example.mazaadytask.databinding.CustomDropdownItemBinding
 import com.example.mazaadytask.databinding.FragmentFormBinding
 import com.example.mazaadytask.dialogs.model_bottom_sheet.ModalBottomSheetDialog
 import dagger.hilt.android.AndroidEntryPoint
-import com.example.mazaadytask.R
+
 private const val TAG = "FormFragment"
 
 @AndroidEntryPoint
@@ -26,7 +25,7 @@ class FormFragment : BaseFragment() {
     private var _binding: FragmentFormBinding? = null
     private val binding get() = _binding!!
 
-    override val viewModel: CategoryViewModel by viewModels()
+    override val viewModel: FormViewModel by viewModels()
 
     private val mainCategory = mutableListOf<Category>()
     private val supCategory = mutableListOf<Children>()
@@ -49,14 +48,17 @@ class FormFragment : BaseFragment() {
 
     private fun setupMainCategoryClickListener() {
         binding.mainCategoryEditText.setOnClickListener {
+
             val modal = ModalBottomSheetDialog(
                 onItemClicked = { item ->
+                    supCategory.clear()
+                    binding.supCategoryEditText.setText("")
+                    binding.llProperties.removeAllViews()
                     mainCategory.find { it.id == item.id }?.children?.let { children ->
                         supCategory.apply {
                             clear()
                             addAll(children.mapNotNull { it })
                         }
-                        binding.supCategoryEditText.setText(supCategory.firstOrNull()?.name ?: "")
                         binding.mainCategoryEditText.setText(item.name)
                     }
                     viewModel.addMap("Main Category", item.name ?: "")
@@ -69,6 +71,14 @@ class FormFragment : BaseFragment() {
 
     private fun setupSupCategoryClickListener() {
         binding.supCategoryEditText.setOnClickListener {
+            if (supCategory.isEmpty()){
+                mainCategory.first()?.children?.let { children ->
+                    supCategory.apply {
+                        clear()
+                        addAll(children.mapNotNull { it })
+                    }
+                }
+            }
             val modal = ModalBottomSheetDialog(
                 onItemClicked = { item ->
                     binding.supCategoryEditText.setText(item.name)
@@ -137,6 +147,7 @@ class FormFragment : BaseFragment() {
                         if (selectedItem.id == -1){
                             customView.tilOtherOptions.visibility = View.VISIBLE
                             customView.supCategoryEditText.setText(selectedItem.name)
+                            customView.tilOtherOptions.hint = selectedItem.name
                         }else{
                             customView.supCategoryEditText.setText(selectedItem.name)
                             fetchAndDisplaySubOptions(selectedItem.id ?: 0, customView)
@@ -182,6 +193,7 @@ class FormFragment : BaseFragment() {
                         if (option.id == -1){
                             customView.tilOtherOptions.visibility = View.VISIBLE
                             customView.supCategoryEditText.setText(option.name)
+                            customView.tilOtherOptions.hint = option.name
                             return@forEach
                         }else{
                             val childView = CustomDropdownItemBinding.inflate(layoutInflater).apply {
@@ -199,6 +211,8 @@ class FormFragment : BaseFragment() {
             }
         }
     }
+
+
 
     override fun onDestroyView() {
         super.onDestroyView()

@@ -2,6 +2,8 @@ package com.example.mazaadytask.dialogs.model_bottom_sheet
 
 import android.app.Dialog
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,6 +22,7 @@ class ModalBottomSheetDialog(
     private var _binding: ModalsheetdialogBinding? = null
     private val binding get() = _binding!!
     private lateinit var bottomSheetAdapter: BottomSheetAdapter
+    private val oldItems = mutableListOf<BottomSheetItem>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -32,8 +35,40 @@ class ModalBottomSheetDialog(
     }
 
     private fun initView() {
-
+        oldItems.clear()
+        oldItems.addAll(items)
+        binding.ivClose.setOnClickListener{
+            dismiss()
+        }
         binding.rvItems.setHasFixedSize(true)
+        binding.etSearch.addTextChangedListener(object : TextWatcher{
+            override fun beforeTextChanged(
+                s: CharSequence?,
+                start: Int,
+                count: Int,
+                after: Int
+            ) {
+
+            }
+
+            override fun onTextChanged(
+                s: CharSequence?,
+                start: Int,
+                before: Int,
+                count: Int
+            ) {
+                val searchText = s.toString()
+                val filteredItems = oldItems.filter { item ->
+                    item.name?.contains(searchText, ignoreCase = true) == true
+                }
+                bottomSheetAdapter.submitList(filteredItems)
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+
+            }
+
+        })
         bottomSheetAdapter = BottomSheetAdapter(object : BottomSheetAdapter.Interaction{
             override fun onItemSelected(
                 position: Int,

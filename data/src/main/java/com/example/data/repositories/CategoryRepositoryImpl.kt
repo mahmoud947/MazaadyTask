@@ -13,8 +13,8 @@ class CategoryRepositoryImpl @Inject constructor(
     override suspend fun getAllCategory(): List<Category> =
         api.getAllCategory().data.categories.map { it.toDomain() }
 
-    override suspend fun getPropertiesByCategory(categoryId: Int): List<Properties> =
-        api.getPropertiesByCategory(categoryId).data.map { it.toDomain() }
+    override suspend fun getSubCategories(categoryId: Int): List<Properties> =
+        api.getSubCategories(categoryId).data.map { it.toDomain() }
 
     override suspend fun getOptionsChildByParentId(parentId: Int): List<Properties> =
         api.getOptionsChildByParentId(parentId).data.map { it.toDomain() }

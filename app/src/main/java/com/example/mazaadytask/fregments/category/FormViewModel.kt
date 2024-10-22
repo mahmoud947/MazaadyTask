@@ -13,7 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 
 @HiltViewModel
-class CategoryViewModel @Inject constructor(
+class FormViewModel @Inject constructor(
     private val categoryRepository: CategoryRepository
 ) : BaseViewModel() {
     private val _categories = MutableLiveData<Resource<List<Category>>>()
@@ -49,7 +49,7 @@ class CategoryViewModel @Inject constructor(
         launchCoroutine(Dispatchers.IO) {
             _categories.postValue(Resource.Loading)
             try {
-                val response = categoryRepository.getPropertiesByCategory(id)
+                val response = categoryRepository.getSubCategories(id)
                 _subCategories.postValue(Resource.Success(response))
             } catch (e: Exception) {
                 _subCategories.postValue(ExceptionHandler.resolveError(e))

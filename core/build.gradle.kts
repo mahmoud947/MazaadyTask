@@ -16,13 +16,14 @@ android {
 
     defaultConfig {
         minSdk = 24
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
 
     buildFeatures {
         buildConfig = true
+        dataBinding = true
+        viewBinding = true
     }
 
     buildTypes {
@@ -93,6 +94,8 @@ dependencies {
     ksp(libs.hilt.compiler)
 
     implementation(libs.androidx.swiperefreshlayout.v120alpha01)
+
+    implementation (libs.lottie)
 
 
 }
